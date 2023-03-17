@@ -7,8 +7,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import plotly.express as xp
-import seaborn as sb
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -82,20 +80,55 @@ print("El envío con mayor FOB fue: ", MCDETA1_2022.iloc[MCDETA1_2022["FOB_CONO"
 #Obteniendo las mercanías que tributan
 MCDETA1_2022["TRIBUTO"]=np.where(MCDETA1_2022["FOB_CONO"]>200, "SÍ", "NO")
 print(MCDETA1_2022)
+
 #Grafico multiple
-mes = ["2022-1", "2022-2", "2022-3", "2022-4", "2022-5", "2022-6", "2022-7", "2022-8", "2022-9", "2022-10", "2022-11", "2022-12"]
+mes = pd.Series(MCDETA1_2022_PIVOT.index)
 MesNombre =["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]
 idx = 1
+fig = plt.figure(figsize=(10,5))
+fig.suptitle('Tipos de servicio por mes', fontsize=16)
 for i in mes:
     TortaMes = MCDETA1_2022[MCDETA1_2022["MES"]==i]["TIPO_GUIA"].value_counts()
     plt.subplot(2, 6, idx)
-    plt.pie(TortaMes, autopct='%1.1f%%', textprops={'fontsize': 7})
+    plt.pie(TortaMes, autopct='%1.1f%%', textprops={'fontsize': 8})
     plt.title(MesNombre[idx-1])
     idx+=1
 plt.tight_layout()
 plt.legend(TortaMes.index, loc="lower center", bbox_to_anchor=(0.5, -0.3), ncol=3)
 plt.show()
 
+#Los envíos con valor FOB=0 son envíos que se mantienen notificados, es decir, no tienen levante.
+#Para graficar el histograma tenemos
+var=MCDETA1_2022[MCDETA1_2022["FOB_CONO"]>0]["FOB_CONO"]
+
+#Obteniendo estadísticos
+min_val = var.min()
+max_val = var.max()
+mean_val = var.mean()
+med_val = var.median()
+mod_val = var.mode()[0]
+
+print('Minimum:{:.2f}\nMean:{:.2f}\nMedian:{:.2f}\nMode:{:.2f}\nMaximum:{:.2f}\n'.format(min_val,
+                                                                                        mean_val,
+                                                                                        med_val,
+                                                                                        mod_val,
+                                                                                        max_val))
+#Creando la figura
+fig = plt.figure(figsize=(10,4))
+plt.hist(var, bins=5000)
+
+#Agregando Lineas de los estadísticos
+plt.axvline(x=min_val, color = 'gray', linestyle='dashed', linewidth = 2)
+plt.axvline(x=mean_val, color = 'cyan', linestyle='dashed', linewidth = 2)
+plt.axvline(x=med_val, color = 'red', linestyle='dashed', linewidth = 2)
+plt.axvline(x=mod_val, color = 'yellow', linestyle='dashed', linewidth = 2)
+plt.axvline(x=max_val, color = 'gray', linestyle='dashed', linewidth = 2)
+
+#Agregando labels
+plt.title('Data Distribution')
+plt.xlabel('Value')
+plt.ylabel('Frequency')
+plt.show()
 
 
 
