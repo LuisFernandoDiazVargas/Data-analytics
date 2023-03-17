@@ -82,20 +82,20 @@ print("El envío con mayor FOB fue: ", MCDETA1_2022.iloc[MCDETA1_2022["FOB_CONO"
 #Obteniendo las mercanías que tributan
 MCDETA1_2022["TRIBUTO"]=np.where(MCDETA1_2022["FOB_CONO"]>200, "SÍ", "NO")
 print(MCDETA1_2022)
-
-
+#Grafico multiple
 mes = ["2022-1", "2022-2", "2022-3", "2022-4", "2022-5", "2022-6", "2022-7", "2022-8", "2022-9", "2022-10", "2022-11", "2022-12"]
+MesNombre =["ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO", "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"]
 idx = 1
 for i in mes:
     TortaMes = MCDETA1_2022[MCDETA1_2022["MES"]==i]["TIPO_GUIA"].value_counts()
-    print(TortaMes)
     plt.subplot(2, 6, idx)
     plt.pie(TortaMes, autopct='%1.1f%%', textprops={'fontsize': 7})
-    plt.title(i)
+    plt.title(MesNombre[idx-1])
     idx+=1
 plt.tight_layout()
 plt.legend(TortaMes.index, loc="lower center", bbox_to_anchor=(0.5, -0.3), ncol=3)
 plt.show()
+
 
 
 
